@@ -2,9 +2,9 @@
 
 ## Team 4
 
-- **[Ayşegül Kaya]** - Student ID: 23091025
-- **[Zeynep Büşra Demir]** - Student ID: 23091602
-- **[Zeynep Sena Yıldız]** - Student ID: 23091021
+- **Ayşegül Kaya** - Student ID: 23091025
+- **Zeynep Büşra Demir** - Student ID: 23091602
+- **Zeynep Sena Yıldız** - Student ID: 23091021
 
 ## About the Project
 
