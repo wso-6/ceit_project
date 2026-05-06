@@ -6,18 +6,18 @@
 - **[Zeynep Büşra Demir]** - Student ID: 23091602
 - **[Zeynep Sena Yıldız]** - Student ID: 23091021
 
-## 📱 About the Project
+## About the Project
 
 This app is developed to raise **cybersecurity and typography awareness** among middle school students. Users learn about phishing, fake URLs, and character tricks, test their knowledge with a quiz, and practice through an interactive game.
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Flutter / Dart** (Mobile app development)
 - **Visual Studio Code** (Development environment)
 - **GitHub** (Version control & collaboration)
 - **Android Studio** (Virtual Device Emulator)
 
-## 🎯 Sections
+## Sections
 
 | Section    | Description                                         |
 | ---------- | --------------------------------------------------- |
@@ -26,7 +26,7 @@ This app is developed to raise **cybersecurity and typography awareness** among 
 | 🎮 Game    | "Cyber Detective" - analyze suspicious messages     |
 | 👤 Profile | User info, score display                            |
 
-## 🚀 How to Run
+## How to Run
 
 ```bash
 flutter pub get
