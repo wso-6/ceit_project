@@ -21,8 +21,8 @@ This app is developed to raise **cybersecurity and typography awareness** among 
 
 | Section    | Description                                         |
 | ---------- | --------------------------------------------------- |
-| 📘 Learn   | Phishing, fake URLs, character tricks, safety rules |
-| ❓ Quiz    | 5-10 question test, instant feedback                |
+|  Learn   | Phishing, fake URLs, character tricks, safety rules |
+| Quiz    | 5-10 question test, instant feedback                |
 | 🎮 Game    | "Cyber Detective" - analyze suspicious messages     |
 | 👤 Profile | User info, score display                            |
 
