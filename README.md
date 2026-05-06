@@ -15,7 +15,7 @@ This app is developed to raise **cybersecurity and typography awareness** among 
 - **Flutter / Dart** (Mobile app development)
 - **Visual Studio Code** (Development environment)
 - **GitHub** (Version control & collaboration)
-- **Android Studio** (Virtual Device Emulator)
+- **Android Studio** (Virtual Device Emulator senaa)
 
 ## Sections
 
