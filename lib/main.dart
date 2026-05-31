@@ -251,32 +251,109 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Arkadaşının eklediği yardımcı fonksiyon (tasarımı oluşturan satırlar)
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF8DA9C4), size: 22),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF4A6B8A),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<Widget> get _pages => [
     _buildLessonsScreen(),
     const Center(child: Text('❓ Quiz Section', style: TextStyle(fontSize: 24))),
     const Center(child: Text('🎮 Game Section', style: TextStyle(fontSize: 24))),
+    
+    // Arkadaşının yeni modern profil tasarımı (Senin giriş sistemiyle entegre edildi)
     Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.person, size: 80, color: Color(0xFF8DA9C4)),
-          const SizedBox(height: 10),
-          Text('User: ${widget.username}', style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade300,
-              foregroundColor: Colors.white,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Color(0xFF8DA9C4),
+              child: Icon(Icons.person, size: 60, color: Colors.white),
             ),
-            child: const Text('Logout'),
-          ),
-        ],
+            const SizedBox(height: 15),
+            Text(
+              widget.username, // Statik isim yerine giriş yapan kullanıcının adı görünecek
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4A6B8A),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  _buildInfoRow(Icons.badge, 'Name', widget.username),
+                  const Divider(),
+                  _buildInfoRow(Icons.school, 'Class', '5-B'),
+                  const Divider(),
+                  _buildInfoRow(Icons.face, 'Gender', 'Male'),
+                  const Divider(),
+                  _buildInfoRow(Icons.star, 'Badge', 'Rookie Detective 🔍'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
+                },
+                icon: const Icon(Icons.logout),
+                label: const Text('Logout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade300,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   ];
