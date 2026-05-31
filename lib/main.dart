@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF4A6B8A),
+                              color: Color.fromARGB(255, 87, 124, 160),
                             ),
                           ),
                         ),
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Game'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-      ),
+         ),
     );
   }
 }
