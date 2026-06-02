@@ -1,6 +1,6 @@
 name: ceit_project
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -12,9 +12,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.2.0
-   
+
   url_launcher: ^6.3.0
-  
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -23,4 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/t1 m1.png
+    - assets/t2 m1.png
+    - assets/t4 m1.png
+    - assets/logo.png

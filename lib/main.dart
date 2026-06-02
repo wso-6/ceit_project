@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './sabit_icerik.dart';
 import './ders_detay_screen.dart';
 import './progress_manager.dart';
+import './splash_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,15 +17,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Cyber Detective',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF5F0EB),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 253, 253, 253),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF8DA9C4)),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF8DA9C4),
+          backgroundColor: Color.fromARGB(255, 26, 26, 224),
           foregroundColor: Colors.white,
           centerTitle: true,
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -64,79 +65,85 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.security, size: 80, color: Color(0xFF8DA9C4)),
-              const SizedBox(height: 10),
-              Text(
-                'Cyber Detective',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF4A6B8A),
-                ),
+      backgroundColor: const Color.fromARGB(255, 211, 224, 240),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 60),
+            // Logo
+            Image.asset('assets/logo.png', width: 350, height: 350),
+            const SizedBox(height: 2),
+            Text(
+              'Cyber Detective',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF4A6B8A),
               ),
-              const SizedBox(height: 40),
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  prefixIcon: const Icon(
-                    Icons.person,
-                    color: Color(0xFF8DA9C4),
-                  ),
-                  border: OutlineInputBorder(
+            ),
+            const SizedBox(height: 30),
+            // Kullanıcı adı
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                prefixIcon: const Icon(
+                  Icons.person,
+                  color: Color.fromARGB(255, 26, 26, 224),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 15),
+            // Şifre
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: const Icon(
+                  Icons.lock,
+                  color: Color.fromARGB(255, 26, 26, 224),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              _message,
+              style: const TextStyle(color: Colors.red, fontSize: 14),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: const Icon(Icons.lock, color: Color(0xFF8DA9C4)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  filled: true,
-                  fillColor: Colors.white,
                 ),
+                child: const Text('Login'),
               ),
-              const SizedBox(height: 10),
-              Text(
-                _message,
-                style: const TextStyle(color: Colors.red, fontSize: 14),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8DA9C4),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  child: const Text('Login'),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -301,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: Offset(0, 4),
                   ),
@@ -346,36 +353,85 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ),
   ];
+  bool get _isLandscape {
+    final orientation = MediaQuery.of(context).orientation;
+    return orientation == Orientation.landscape;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cyber Detective')),
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        selectedItemColor: const Color(0xFF8DA9C4),
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Lessons',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.videogame_asset),
-            label: 'Game',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-      ),
+      body: _isLandscape
+          ? Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _currentIndex,
+                  onDestinationSelected: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  backgroundColor: const Color(0xFFF8FAFD),
+                  selectedIconTheme: const IconThemeData(
+                    color: Color.fromARGB(255, 26, 26, 224),
+                  ),
+                  unselectedIconTheme: IconThemeData(
+                    color: const Color.fromARGB(122, 11, 2, 70),
+                  ),
+                  labelType: NavigationRailLabelType.all,
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.menu_book),
+                      label: Text('Lessons'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.quiz),
+                      label: Text('Quiz'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.videogame_asset),
+                      label: Text('Game'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.person),
+                      label: Text('Profile'),
+                    ),
+                  ],
+                ),
+                Expanded(child: _pages[_currentIndex]),
+              ],
+            )
+          : _pages[_currentIndex],
+      bottomNavigationBar: _isLandscape
+          ? null
+          : BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              selectedItemColor: const Color.fromARGB(255, 26, 26, 224),
+              unselectedItemColor: const Color.fromARGB(122, 11, 2, 70),
+              backgroundColor: const Color(0xFFF8FAFD),
+              type: BottomNavigationBarType.fixed,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.menu_book),
+                  label: 'Lessons',
+                ),
+                BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.videogame_asset),
+                  label: 'Game',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person),
+                  label: 'Profile',
+                ),
+              ],
+            ),
     );
   }
 
