@@ -85,7 +85,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'Username',
-                  prefixIcon: const Icon(Icons.person, color: Color(0xFF8DA9C4)),
+                  prefixIcon: const Icon(
+                    Icons.person,
+                    color: Color(0xFF8DA9C4),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -108,7 +111,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              Text(_message, style: const TextStyle(color: Colors.red, fontSize: 14)),
+              Text(
+                _message,
+                style: const TextStyle(color: Colors.red, fontSize: 14),
+              ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -177,7 +183,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Row(
                       children: [
-                        Text(topic.iconEmoji, style: const TextStyle(fontSize: 28)),
+                        Text(
+                          topic.iconEmoji,
+                          style: const TextStyle(fontSize: 28),
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -220,10 +229,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: BoxDecoration(
                               color: isCompleted
                                   ? Colors.green
-                                  : const Color(0xFF8DA9C4).withValues(alpha: 0.15),
+                                  : const Color(
+                                      0xFF8DA9C4,
+                                    ).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isCompleted ? Colors.green : const Color(0xFF8DA9C4),
+                                color: isCompleted
+                                    ? Colors.green
+                                    : const Color(0xFF8DA9C4),
                                 width: 2,
                               ),
                             ),
@@ -233,7 +246,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,
-                                  color: isCompleted ? Colors.white : const Color(0xFF4A6B8A),
+                                  color: isCompleted
+                                      ? Colors.white
+                                      : const Color(0xFF4A6B8A),
                                 ),
                               ),
                             ),
@@ -254,29 +269,80 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> get _pages => [
     _buildLessonsScreen(),
     const Center(child: Text('❓ Quiz Section', style: TextStyle(fontSize: 24))),
-    const Center(child: Text('🎮 Game Section', style: TextStyle(fontSize: 24))),
+    const Center(
+      child: Text('🎮 Game Section', style: TextStyle(fontSize: 24)),
+    ),
     Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.person, size: 80, color: Color(0xFF8DA9C4)),
-          const SizedBox(height: 10),
-          Text('User: ${widget.username}', style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade300,
-              foregroundColor: Colors.white,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: Color(0xFF8DA9C4),
+              child: Icon(Icons.person, size: 60, color: Colors.white),
             ),
-            child: const Text('Logout'),
-          ),
-        ],
+            SizedBox(height: 15),
+            Text(
+              widget.username,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4A6B8A),
+              ),
+            ),
+            SizedBox(height: 30),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  _buildInfoRow(Icons.badge, 'Name', 'Ali Veli'),
+                  Divider(),
+                  _buildInfoRow(Icons.school, 'Grade', '5-B'),
+                  Divider(),
+                  _buildInfoRow(Icons.face, 'Gender', 'Male'),
+                  Divider(),
+                  _buildInfoRow(Icons.star, 'Badge', 'Rookie Detective 🔍'),
+                ],
+              ),
+            ),
+            SizedBox(height: 30),
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                icon: Icon(Icons.logout),
+                label: Text('Logout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade300,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   ];
@@ -298,12 +364,40 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Lessons'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Lessons',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.quiz), label: 'Quiz'),
-          BottomNavigationBarItem(icon: Icon(Icons.videogame_asset), label: 'Game'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.videogame_asset),
+            label: 'Game',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Icon(icon, color: Color(0xFF8DA9C4), size: 22),
+          SizedBox(width: 12),
+          Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+          Spacer(),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF4A6B8A),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
