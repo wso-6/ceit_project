@@ -130,7 +130,7 @@ If a website's passport is expired or fake, your computer will show a big red wa
     id: "safe_comms",
     title: "Safe Communication",
     iconEmoji: "💬",
-    color: const Color.fromARGB(255, 202, 83, 129),
+    color: const Color.fromARGB(255, 183, 75, 117),
     modules: [
       Module(
         number: 1,

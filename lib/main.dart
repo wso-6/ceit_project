@@ -4,6 +4,7 @@ import './sabit_icerik.dart';
 import './ders_detay_screen.dart';
 import './progress_manager.dart';
 import './splash_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -184,104 +185,221 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListenableBuilder(
       listenable: _progressManager,
       builder: (context, child) {
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: allTopics.length,
-          itemBuilder: (context, index) {
-            final topic = allTopics[index];
-            return Container(
-              margin: const EdgeInsets.only(bottom: 16),
+        return Column(
+          children: [
+            // Üst bilgi kartı
+            Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: topic.color.withValues(alpha: 0.2),
+                color: const Color.fromARGB(225, 11, 79, 135),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: topic.color.withValues(alpha: 0.5),
-                  width: 1.5,
-                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color.fromARGB(
+                      255,
+                      167,
+                      167,
+                      167,
+                    ).withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          topic.iconEmoji,
-                          style: const TextStyle(fontSize: 28),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            topic.title,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: topic.color,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Level 3 Detective',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 202, 223, 243),
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: topic.modules.map((module) {
-                        final isCompleted = _progressManager.isModuleCompleted(
-                          topic.id,
-                          module.number,
-                        );
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DersDetayScreen(
-                                  module: module,
-                                  mainTitle: topic.title,
-                                  topicId: topic.id,
-                                  progressManager: _progressManager,
+                            const SizedBox(height: 8),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: LinearProgressIndicator(
+                                value: 0.72,
+                                minHeight: 10,
+                                backgroundColor: Colors.grey.shade200,
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Color.fromARGB(255, 26, 26, 224),
                                 ),
                               ),
-                            );
-                          },
-                          child: Container(
-                            width: 55,
-                            height: 55,
-                            decoration: BoxDecoration(
-                              color: isCompleted ? Colors.green : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isCompleted ? Colors.green : topic.color,
-                                width: 2,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '72% completed',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: const Color.fromARGB(255, 241, 223, 223),
                               ),
                             ),
-                            child: Center(
-                              child: isCompleted
-                                  ? const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 28,
-                                    )
-                                  : Text(
-                                      "${module.number}",
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: topic.color,
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8EDF2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.shield,
+                              size: 32,
+                              color: Color(0xFF4A6B8A),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Rookie',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF4A6B8A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // TODO: En son kaldığı yere git
+                      },
+                      icon: const Icon(Icons.play_arrow, size: 20),
+                      label: const Text('Continue where you left off'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Ders listesi
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: allTopics.length,
+                itemBuilder: (context, index) {
+                  final topic = allTopics[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: topic.color.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: topic.color.withValues(alpha: 0.5),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                topic.iconEmoji,
+                                style: const TextStyle(fontSize: 28),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  topic.title,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: topic.color,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 12,
+                            children: topic.modules.map((module) {
+                              final isCompleted = _progressManager
+                                  .isModuleCompleted(topic.id, module.number);
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DersDetayScreen(
+                                        module: module,
+                                        mainTitle: topic.title,
+                                        topicId: topic.id,
+                                        progressManager: _progressManager,
                                       ),
                                     ),
-                            ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 55,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: isCompleted
+                                        ? Colors.green
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isCompleted
+                                          ? Colors.green
+                                          : topic.color,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: isCompleted
+                                        ? const Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                            size: 28,
+                                          )
+                                        : Text(
+                                            "${module.number}",
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: topic.color,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         );
       },
     );
@@ -391,7 +509,39 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cyber Detective')),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 26, 26, 224),
+              ),
+              child: CustomPaint(
+                painter: ShieldPainter(),
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+              ),
+            ),
+            AppBar(
+              toolbarHeight: 90,
+              title: Text(
+                'Cyber Detective',
+                style: GoogleFonts.orbitron(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              foregroundColor: Colors.white,
+              centerTitle: true,
+            ),
+          ],
+        ),
+      ),
       body: _isLandscape
           ? Row(
               children: [
@@ -486,4 +636,35 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class ShieldPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.06)
+      ..style = PaintingStyle.fill;
+
+    // Kalkan desenleri - grid şeklinde
+    for (double y = 0; y < size.height; y += 40) {
+      for (double x = 0; x < size.width; x += 40) {
+        _drawShield(canvas, Offset(x + 20, y + 10), 8, paint);
+      }
+    }
+  }
+
+  void _drawShield(Canvas canvas, Offset center, double size, Paint paint) {
+    final path = Path();
+    path.moveTo(center.dx, center.dy - size);
+    path.lineTo(center.dx + size, center.dy - size * 0.5);
+    path.lineTo(center.dx + size, center.dy + size * 0.3);
+    path.lineTo(center.dx, center.dy + size);
+    path.lineTo(center.dx - size, center.dy + size * 0.3);
+    path.lineTo(center.dx - size, center.dy - size * 0.5);
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
