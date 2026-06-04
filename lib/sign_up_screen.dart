@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './database_helper.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,14 +12,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _gradeController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String _selectedGender = 'Male';
 
-  void _signUp() {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+
+  void _signUp() async {
     String name = _nameController.text.trim();
     String surname = _surnameController.text.trim();
     String grade = _gradeController.text.trim();
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
 
-    if (name.isEmpty || surname.isEmpty || grade.isEmpty) {
+    if (name.isEmpty ||
+        surname.isEmpty ||
+        grade.isEmpty ||
+        username.isEmpty ||
+        password.isEmpty) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill in all fields!'),
@@ -27,6 +39,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
       return;
     }
+
+    // Kullanıcı adı zaten var mı?
+    bool exists = await _dbHelper.usernameExists(username);
+    if (!mounted) return;
+
+    if (exists) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('This username is already taken!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Kaydet
+    await _dbHelper.registerUser(
+      name: name,
+      surname: surname,
+      grade: grade,
+      gender: _selectedGender,
+      username: username,
+      password: password,
+    );
+
+    if (!mounted) return;
 
     showDialog(
       context: context,
@@ -107,6 +145,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
               decoration: InputDecoration(
                 labelText: 'Grade (e.g. 5-B)',
                 prefixIcon: const Icon(Icons.school),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                prefixIcon: const Icon(Icons.account_circle),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                prefixIcon: const Icon(Icons.lock),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

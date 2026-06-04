@@ -1,3 +1,4 @@
+import './database_helper.dart';
 import 'package:flutter/material.dart';
 import './sabit_icerik.dart';
 import './ders_detay_screen.dart';
@@ -40,9 +41,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   String _message = '';
 
-  void _login() {
+  void _login() async {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
 
@@ -50,10 +52,19 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _message = 'Please fill in all fields!';
       });
-    } else if (username == 'admin' && password == '1234') {
+      return;
+    }
+
+    var user = await _dbHelper.loginUser(username, password);
+
+    if (!mounted) return;
+
+    if (user != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(username: username)),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(username: username, userData: user),
+        ),
       );
     } else {
       setState(() {
@@ -152,7 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
 class HomeScreen extends StatefulWidget {
   final String username;
-  const HomeScreen({super.key, required this.username});
+  final Map<String, dynamic>? userData;
+  const HomeScreen({super.key, required this.username, this.userData});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -316,13 +328,29 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Column(
                 children: [
-                  _buildInfoRow(Icons.badge, 'Name', 'Ali Veli'),
+                  _buildInfoRow(
+                    Icons.badge,
+                    'Name',
+                    widget.userData?['name'] ?? 'Ali Veli',
+                  ),
                   Divider(),
-                  _buildInfoRow(Icons.school, 'Grade', '5-B'),
+                  _buildInfoRow(
+                    Icons.school,
+                    'Grade',
+                    widget.userData?['grade'] ?? '5-B',
+                  ),
                   Divider(),
-                  _buildInfoRow(Icons.face, 'Gender', 'Male'),
+                  _buildInfoRow(
+                    Icons.face,
+                    'Gender',
+                    widget.userData?['gender'] ?? 'Male',
+                  ),
                   Divider(),
-                  _buildInfoRow(Icons.star, 'Badge', 'Rookie Detective 🔍'),
+                  _buildInfoRow(
+                    Icons.star,
+                    'Badge',
+                    widget.userData?['badge'] ?? 'Rookie Detective 🔍',
+                  ),
                 ],
               ),
             ),
