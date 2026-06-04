@@ -189,11 +189,15 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: allTopics.length,
           itemBuilder: (context, index) {
             final topic = allTopics[index];
-            return Card(
+            return Container(
               margin: const EdgeInsets.only(bottom: 16),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
+              decoration: BoxDecoration(
+                color: topic.color.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: topic.color.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -210,10 +214,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: Text(
                             topic.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 87, 124, 160),
+                              color: topic.color,
                             ),
                           ),
                         ),
@@ -246,30 +250,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 55,
                             height: 55,
                             decoration: BoxDecoration(
-                              color: isCompleted
-                                  ? Colors.green
-                                  : const Color(
-                                      0xFF8DA9C4,
-                                    ).withValues(alpha: 0.15),
+                              color: isCompleted ? Colors.green : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isCompleted
-                                    ? Colors.green
-                                    : const Color(0xFF8DA9C4),
+                                color: isCompleted ? Colors.green : topic.color,
                                 width: 2,
                               ),
                             ),
                             child: Center(
-                              child: Text(
-                                "${module.number}",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: isCompleted
-                                      ? Colors.white
-                                      : const Color(0xFF4A6B8A),
-                                ),
-                              ),
+                              child: isCompleted
+                                  ? const Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 28,
+                                    )
+                                  : Text(
+                                      "${module.number}",
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: topic.color,
+                                      ),
+                                    ),
                             ),
                           ),
                         );

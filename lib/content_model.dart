@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 class MainTopic {
   final String id;
   final String title;
   final String iconEmoji;
+  final Color color;
   final List<Module> modules;
 
   MainTopic({
     required this.id,
     required this.title,
     required this.iconEmoji,
+    required this.color,
     required this.modules,
   });
 }
@@ -18,7 +22,7 @@ class Module {
   final String description;
   final String detailedContent;
   final String videoUrl;
-  final String? imageAsset;  // 🟢 YENİ: Görsel dosya yolu
+  final String? imageAsset; // 🟢 YENİ: Görsel dosya yolu
   final bool hasQuiz;
   final String? quizId;
 

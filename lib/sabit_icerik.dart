@@ -1,4 +1,5 @@
 import './content_model.dart';
+import 'dart:ui';
 
 final List<MainTopic> allTopics = [
   // ==================== TOPIC 1: WHAT IS CRYPTOGRAPHY? ====================
@@ -6,6 +7,7 @@ final List<MainTopic> allTopics = [
     id: "crypto_intro",
     title: "What is Cryptography?",
     iconEmoji: "🔐",
+    color: const Color.fromARGB(255, 15, 97, 99),
     modules: [
       Module(
         number: 1,
@@ -49,7 +51,7 @@ Today, our computers use much more advanced versions of this exact idea to prote
 """,
         videoUrl: "https://youtu.be/sMOZf4GN3oc",
         imageAsset: null,
-        hasQuiz: true,   // ✅ Son modül - Quiz var
+        hasQuiz: true, // ✅ Son modül - Quiz var
         quizId: "caesar_quiz",
       ),
     ],
@@ -60,6 +62,7 @@ Today, our computers use much more advanced versions of this exact idea to prote
     id: "fake_traps",
     title: "Spot Fake Traps",
     iconEmoji: "🛡️",
+    color: const Color.fromARGB(255, 90, 95, 201),
     modules: [
       Module(
         number: 1,
@@ -77,7 +80,7 @@ What is the Difference?
 - HTTPS (Safe): This website uses CRYPTOGRAPHY! Before your data leaves your computer, it puts on a powerful invisibility cloak (encryption). Even if hackers catch your data, they only see scrambled codes!
 """,
         videoUrl: "https://youtube.com/shorts/bJGNl0Sv1kw",
-        imageAsset: "assets/t2 m1.png",  // HTTPS vs HTTP görseli
+        imageAsset: "assets/t2 m1.png", // HTTPS vs HTTP görseli
         hasQuiz: false,
         quizId: null,
       ),
@@ -116,7 +119,7 @@ If a website's passport is expired or fake, your computer will show a big red wa
 """,
         videoUrl: "https://youtu.be/c-O-uMxTaEw",
         imageAsset: null,
-        hasQuiz: true,   // ✅ Son modül - Quiz var
+        hasQuiz: true, // ✅ Son modül - Quiz var
         quizId: "certificate_quiz",
       ),
     ],
@@ -127,6 +130,7 @@ If a website's passport is expired or fake, your computer will show a big red wa
     id: "safe_comms",
     title: "Safe Communication",
     iconEmoji: "💬",
+    color: const Color.fromARGB(255, 202, 83, 129),
     modules: [
       Module(
         number: 1,
@@ -177,6 +181,7 @@ Your secrets stay completely safe!
     id: "cyber_awareness",
     title: "Cyber Awareness",
     iconEmoji: "🧠",
+    color: const Color.fromARGB(255, 191, 108, 53),
     modules: [
       Module(
         number: 1,
@@ -197,7 +202,7 @@ DANGER: "roblox123" can be cracked in 2 seconds!
 SECURE: "PurpleCloudDance7!" takes 2 million years to crack.
 """,
         videoUrl: "",
-        imageAsset: "assets/t4 m1.png",  // Şifre görseli
+        imageAsset: "assets/t4 m1.png", // Şifre görseli
         hasQuiz: false,
         quizId: null,
       ),
@@ -238,7 +243,7 @@ Remember, the internet is a vast and beautiful world, but it requires smart prot
 """,
         videoUrl: "",
         imageAsset: null,
-        hasQuiz: true,   // ✅ Son modül - Final Quiz
+        hasQuiz: true, // ✅ Son modül - Final Quiz
         quizId: "final_hero_quiz",
       ),
     ],
