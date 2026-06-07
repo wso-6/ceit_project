@@ -100,4 +100,27 @@ class DatabaseHelper {
     );
     return result.isNotEmpty;
   }
+
+  // Quiz skorunu güncelle (sadece daha yüksekse)
+  Future<void> updateQuizScore(String username, int score) async {
+    Database db = await database;
+    // Mevcut skoru al
+    List<Map<String, dynamic>> result = await db.query(
+      'users',
+      columns: ['quiz_score'],
+      where: 'username = ?',
+      whereArgs: [username],
+    );
+    if (result.isNotEmpty) {
+      int currentScore = result.first['quiz_score'] as int? ?? 0;
+      if (score > currentScore) {
+        await db.update(
+          'users',
+          {'quiz_score': score},
+          where: 'username = ?',
+          whereArgs: [username],
+        );
+      }
+    }
+  }
 }

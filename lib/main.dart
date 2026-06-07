@@ -4,6 +4,8 @@ import './sabit_icerik.dart';
 import './ders_detay_screen.dart';
 import './progress_manager.dart';
 import './splash_screen.dart';
+import './quiz_icerik.dart';
+import './quiz_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -405,9 +407,199 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildQuizScreen() {
+    return Column(
+      children: [
+        // Üst bilgi kartı
+        Container(
+          margin: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 170, 210, 244),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Quiz Progress',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF4A6B8A),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: LinearProgressIndicator(
+                            value: 0.25,
+                            minHeight: 10,
+                            backgroundColor: Colors.grey.shade200,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color.fromARGB(255, 26, 26, 224),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '1/4 quizzes completed',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE8EDF2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: const [
+                        Icon(Icons.quiz, size: 32, color: Color(0xFF4A6B8A)),
+                        SizedBox(height: 4),
+                        Text(
+                          'Quiz',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4A6B8A),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // TODO: İlk tamamlanmamış quize git
+                  },
+                  icon: const Icon(Icons.play_arrow, size: 20),
+                  label: const Text('Continue where you left off'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Quiz listesi
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: allQuizzes.length,
+            itemBuilder: (context, index) {
+              final quiz = allQuizzes[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color.fromARGB(
+                      255,
+                      26,
+                      26,
+                      224,
+                    ).withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuizScreen(
+                            quizTopic: quiz,
+                            username: widget.username,
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Text(
+                            quiz.iconEmoji,
+                            style: const TextStyle(fontSize: 36),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  quiz.title,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF4A6B8A),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${quiz.questions.length} questions',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Color.fromARGB(255, 26, 26, 224),
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   List<Widget> get _pages => [
     _buildLessonsScreen(),
-    const Center(child: Text('❓ Quiz Section', style: TextStyle(fontSize: 24))),
+    _buildQuizScreen(),
     const Center(
       child: Text('🎮 Game Section', style: TextStyle(fontSize: 24)),
     ),
