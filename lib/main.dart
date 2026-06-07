@@ -5,7 +5,6 @@ import './ders_detay_screen.dart';
 import './progress_manager.dart';
 import './splash_screen.dart';
 import './quiz_icerik.dart';
-import './quiz_screen.dart';
 import './quiz_start_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -87,7 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 60),
-            // Logo
             Image.asset('assets/logo.png', width: 350, height: 350),
             const SizedBox(height: 2),
             Text(
@@ -99,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            // Kullanıcı adı
             TextField(
               controller: _usernameController,
               decoration: InputDecoration(
@@ -116,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 15),
-            // Şifre
             TextField(
               controller: _passwordController,
               obscureText: true,
@@ -168,19 +164,26 @@ class _LoginScreenState extends State<LoginScreen> {
 class HomeScreen extends StatefulWidget {
   final String username;
   final Map<String, dynamic>? userData;
-  const HomeScreen({super.key, required this.username, this.userData});
+  final int initialIndex;
+  const HomeScreen({
+    super.key,
+    required this.username,
+    this.userData,
+    this.initialIndex = 0,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
   late ProgressManager _progressManager;
 
   @override
   void initState() {
     super.initState();
+    _currentIndex = widget.initialIndex;
     _progressManager = ProgressManager();
   }
 
@@ -190,7 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, child) {
         return Column(
           children: [
-            // Üst bilgi kartı
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(16),
@@ -256,8 +258,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: const Color(0xFFE8EDF2),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Column(
-                          children: const [
+                        child: const Column(
+                          children: [
                             Icon(
                               Icons.shield,
                               size: 32,
@@ -281,9 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO: En son kaldığı yere git
-                      },
+                      onPressed: () {},
                       icon: const Icon(Icons.play_arrow, size: 20),
                       label: const Text('Continue where you left off'),
                       style: ElevatedButton.styleFrom(
@@ -298,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Ders listesi
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -411,7 +410,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildQuizScreen() {
     return Column(
       children: [
-        // Üst bilgi kartı
         Container(
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(16),
@@ -472,8 +470,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: const Color(0xFFE8EDF2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Column(
-                      children: const [
+                    child: const Column(
+                      children: [
                         Icon(Icons.quiz, size: 32, color: Color(0xFF4A6B8A)),
                         SizedBox(height: 4),
                         Text(
@@ -493,9 +491,7 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    // TODO: İlk tamamlanmamış quize git
-                  },
+                  onPressed: () {},
                   icon: const Icon(Icons.play_arrow, size: 20),
                   label: const Text('Continue where you left off'),
                   style: ElevatedButton.styleFrom(
@@ -510,7 +506,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        // Quiz listesi
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -610,26 +605,111 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: Color(0xFF8DA9C4),
-              child: Icon(Icons.person, size: 60, color: Colors.white),
+            // Avatar - ayrı
+            Stack(
+              children: [
+                CircleAvatar(
+                  radius: 55,
+                  backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+                  child: Icon(
+                    _getAvatarIcon(widget.userData?['avatar'] ?? 'person'),
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => _showAvatarPicker(),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 26, 26, 224),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 14,
+                        color: Color.fromARGB(255, 26, 26, 224),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 12),
+            // Hoşgeldin mesajı
             Text(
-              widget.username,
+              'Welcome, ${widget.username}!',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF4A6B8A),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
+            // Level + Badge + XP kartı
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD6E4F0),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Level 3 Detective',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Color.fromARGB(255, 26, 26, 224),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.userData?['badge'] ?? 'Rookie Detective 🔍',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: const Color.fromARGB(255, 10, 0, 0),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: 0.72,
+                      minHeight: 8,
+                      backgroundColor: Colors.grey.shade300,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color.fromARGB(255, 26, 26, 224),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '720 XP',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: const Color.fromARGB(255, 10, 0, 0),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            // Bilgi tablosu
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: const Color.fromARGB(255, 208, 251, 255),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -694,6 +774,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ),
   ];
+
   bool get _isLandscape {
     final orientation = MediaQuery.of(context).orientation;
     return orientation == Orientation.landscape;
@@ -808,6 +889,117 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  final List<Map<String, String>> _avatars = const [
+    {'icon': 'person', 'label': 'Person'},
+    {'icon': 'shield', 'label': 'Shield'},
+    {'icon': 'rocket_launch', 'label': 'Rocket'},
+    {'icon': 'emoji_events', 'label': 'Trophy'},
+    {'icon': 'local_police', 'label': 'Badge'},
+    {'icon': 'psychology', 'label': 'Brain'},
+    {'icon': 'sports_esports', 'label': 'Gamer'},
+    {'icon': 'favorite', 'label': 'Heart'},
+  ];
+
+  IconData _getAvatarIcon(String iconName) {
+    switch (iconName) {
+      case 'shield':
+        return Icons.shield;
+      case 'rocket_launch':
+        return Icons.rocket_launch;
+      case 'emoji_events':
+        return Icons.emoji_events;
+      case 'local_police':
+        return Icons.local_police;
+      case 'psychology':
+        return Icons.psychology;
+      case 'sports_esports':
+        return Icons.sports_esports;
+      case 'favorite':
+        return Icons.favorite;
+      default:
+        return Icons.person;
+    }
+  }
+
+  void _showAvatarPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Choose Your Avatar',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4A6B8A),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              children: _avatars.map((avatar) {
+                return GestureDetector(
+                  onTap: () async {
+                    await DatabaseHelper().updateAvatar(
+                      widget.username,
+                      avatar['icon']!,
+                    );
+                    final user = await DatabaseHelper().getUser(
+                      widget.username,
+                    );
+                    if (!mounted) return;
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(
+                          username: widget.username,
+                          userData: user,
+                          initialIndex: 3,
+                        ),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+                        child: Icon(
+                          _getAvatarIcon(avatar['icon']!),
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        avatar['label']!,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
@@ -815,14 +1007,20 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon, color: Color(0xFF8DA9C4), size: 22),
           SizedBox(width: 12),
-          Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: const Color.fromARGB(255, 30, 29, 29),
+            ),
+          ),
           Spacer(),
           Text(
             value,
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 17,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF4A6B8A),
+              color: Color.fromARGB(255, 38, 107, 60),
             ),
           ),
         ],
@@ -837,8 +1035,6 @@ class ShieldPainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.white.withValues(alpha: 0.06)
       ..style = PaintingStyle.fill;
-
-    // Kalkan desenleri - grid şeklinde
     for (double y = 0; y < size.height; y += 40) {
       for (double x = 0; x < size.width; x += 40) {
         _drawShield(canvas, Offset(x + 20, y + 10), 8, paint);

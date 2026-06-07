@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'cyber_detective.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -38,20 +38,23 @@ class DatabaseHelper {
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         badge TEXT DEFAULT 'Rookie Detective 🔍',
+        avatar TEXT DEFAULT 'person',
         quiz_score INTEGER DEFAULT 0,
         game_score INTEGER DEFAULT 0
       )
-      
-  CREATE TABLE quiz_history (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    quiz_id TEXT NOT NULL,
-    score INTEGER NOT NULL,
-    total INTEGER NOT NULL,
-    correct INTEGER NOT NULL,
-    wrong INTEGER NOT NULL,
-    date TEXT NOT NULL
-  )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE quiz_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        quiz_id TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        total INTEGER NOT NULL,
+        correct INTEGER NOT NULL,
+        wrong INTEGER NOT NULL,
+        date TEXT NOT NULL
+      )
     ''');
   }
 
@@ -69,6 +72,11 @@ class DatabaseHelper {
         date TEXT NOT NULL
       )
     ''');
+    }
+    if (oldVersion < 3) {
+      await db.execute(
+        "ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT 'person'",
+      );
     }
   }
 
@@ -190,6 +198,16 @@ class DatabaseHelper {
       whereArgs: [username, quizId],
       orderBy: 'id DESC',
       limit: 4,
+    );
+  }
+
+  Future<void> updateAvatar(String username, String avatar) async {
+    Database db = await database;
+    await db.update(
+      'users',
+      {'avatar': avatar},
+      where: 'username = ?',
+      whereArgs: [username],
     );
   }
 }

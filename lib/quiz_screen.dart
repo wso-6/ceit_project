@@ -202,7 +202,7 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 85),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
