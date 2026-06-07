@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import './quiz_model.dart';
 import './database_helper.dart';
 import './quiz_screen.dart';
+import './progress_manager.dart';
+import './sabit_icerik.dart';
 
 class QuizStartScreen extends StatefulWidget {
   final QuizTopic quizTopic;
@@ -20,10 +22,12 @@ class QuizStartScreen extends StatefulWidget {
 class _QuizStartScreenState extends State<QuizStartScreen> {
   List<Map<String, dynamic>> _history = [];
   bool _loading = true;
+  late ProgressManager _progressManager;
 
   @override
   void initState() {
     super.initState();
+    _progressManager = ProgressManager();
     _loadHistory();
   }
 
@@ -99,6 +103,53 @@ class _QuizStartScreenState extends State<QuizStartScreen> {
                     height: 50,
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        // Konunun tüm modülleri tamamlandı mı?
+                        final topic = allTopics.firstWhere(
+                          (t) => t.id == widget.quizTopic.id,
+                        );
+                        bool allCompleted = topic.modules.every(
+                          (m) => _progressManager.isModuleCompleted(
+                            widget.quizTopic.id,
+                            m.number,
+                          ),
+                        );
+
+                        if (!allCompleted) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              title: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.lock,
+                                    color: Colors.orange,
+                                    size: 28,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Locked!'),
+                                ],
+                              ),
+                              content: const Text(
+                                'You must complete all lessons in this topic before taking the quiz!',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text(
+                                    'OK',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

@@ -355,6 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         mainTitle: topic.title,
                                         topicId: topic.id,
                                         progressManager: _progressManager,
+                                        username: widget.username,
                                       ),
                                     ),
                                   );
@@ -649,7 +650,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF4A6B8A),
+                color: Color.fromARGB(255, 24, 34, 44),
               ),
             ),
             SizedBox(height: 20),

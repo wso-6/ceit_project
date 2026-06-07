@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import './content_model.dart';
 import './progress_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
+import './quiz_icerik.dart';
+import './quiz_start_screen.dart';
 
 class DersDetayScreen extends StatefulWidget {
   final Module module;
   final String mainTitle;
   final String topicId;
   final ProgressManager progressManager;
+  final String username;
 
   const DersDetayScreen({
     super.key,
@@ -15,6 +18,7 @@ class DersDetayScreen extends StatefulWidget {
     required this.mainTitle,
     required this.topicId,
     required this.progressManager,
+    required this.username,
   });
 
   @override
@@ -26,7 +30,6 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
 
   // 🟢 Renk sabitleri
   static const Color _selectedColor = Color.fromARGB(255, 26, 26, 224);
-  
 
   @override
   void initState() {
@@ -262,12 +265,17 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
           Center(
             child: ElevatedButton.icon(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "🎯 Quiz: ${widget.module.quizId} - Coming soon!",
+                final quiz = allQuizzes.firstWhere(
+                  (q) => q.id == widget.topicId,
+                  orElse: () => allQuizzes[0],
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuizStartScreen(
+                      quizTopic: quiz,
+                      username: widget.username,
                     ),
-                    backgroundColor: Colors.orange,
                   ),
                 );
               },
