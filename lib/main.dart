@@ -6,6 +6,7 @@ import './progress_manager.dart';
 import './splash_screen.dart';
 import './quiz_icerik.dart';
 import './quiz_screen.dart';
+import './quiz_start_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -539,7 +540,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => QuizScreen(
+                          builder: (context) => QuizStartScreen(
                             quizTopic: quiz,
                             username: widget.username,
                           ),

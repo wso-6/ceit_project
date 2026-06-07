@@ -19,19 +19,18 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   int _currentIndex = 0;
   int _score = 0;
-  int? _selectedIndex;
-  bool _answered = false;
   bool _finished = false;
+  late List<int?> _userAnswers;
 
-  void _checkAnswer(int selected) {
-    if (_answered) return;
+  @override
+  void initState() {
+    super.initState();
+    _userAnswers = List.filled(widget.quizTopic.questions.length, null);
+  }
+
+  void _selectAnswer(int selected) {
     setState(() {
-      _selectedIndex = selected;
-      _answered = true;
-      if (selected ==
-          widget.quizTopic.questions[_currentIndex].correctAnswerIndex) {
-        _score++;
-      }
+      _userAnswers[_currentIndex] = selected;
     });
   }
 
@@ -39,26 +38,40 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_currentIndex < widget.quizTopic.questions.length - 1) {
       setState(() {
         _currentIndex++;
-        _selectedIndex = null;
-        _answered = false;
       });
     } else {
-      setState(() {
-        _finished = true;
-        if (_finished) {
-          DatabaseHelper().updateQuizScore(widget.username, _score);
-        }
-      });
+      _finishQuiz();
     }
+  }
+
+  void _finishQuiz() {
+    int score = 0;
+    for (int i = 0; i < widget.quizTopic.questions.length; i++) {
+      if (_userAnswers[i] == widget.quizTopic.questions[i].correctAnswerIndex) {
+        score++;
+      }
+    }
+    _score = score;
+    DatabaseHelper().updateQuizScore(widget.username, _score);
+    setState(() {
+      _finished = true;
+    });
+    final correct = score;
+    final wrong = widget.quizTopic.questions.length - score;
+    DatabaseHelper().saveQuizHistory(
+      username: widget.username,
+      quizId: widget.quizTopic.id,
+      score: score,
+      total: widget.quizTopic.questions.length,
+      correct: correct,
+      wrong: wrong,
+    );
   }
 
   void _previousQuestion() {
     if (_currentIndex > 0) {
       setState(() {
         _currentIndex--;
-        _selectedIndex = null;
-        _answered = false;
-        // Önceki soruya dönünce skoru koru, ama cevap seçimini sıfırla
       });
     }
   }
@@ -84,7 +97,6 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
       body: Column(
         children: [
-          // İlerleme çubuğu
           LinearProgressIndicator(
             value: (_currentIndex + 1) / totalQuestions,
             minHeight: 6,
@@ -110,7 +122,6 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Soru kartı
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -135,29 +146,11 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  // Cevap seçenekleri
                   ...List.generate(question.options.length, (index) {
-                    final isSelected = _selectedIndex == index;
-                    final isCorrect = index == question.correctAnswerIndex;
-
-                    Color? bgColor;
-                    Color? borderColor;
-                    IconData? icon;
-
-                    if (_answered) {
-                      if (isCorrect) {
-                        bgColor = Colors.green.withValues(alpha: 0.1);
-                        borderColor = Colors.green;
-                        icon = Icons.check_circle;
-                      } else if (isSelected && !isCorrect) {
-                        bgColor = Colors.red.withValues(alpha: 0.1);
-                        borderColor = Colors.red;
-                        icon = Icons.cancel;
-                      } else {
-                        bgColor = Colors.white;
-                        borderColor = Colors.grey.shade300;
-                      }
-                    } else if (isSelected) {
+                    final isSelected = _userAnswers[_currentIndex] == index;
+                    Color bgColor;
+                    Color borderColor;
+                    if (isSelected) {
                       bgColor = const Color.fromARGB(
                         255,
                         26,
@@ -169,9 +162,8 @@ class _QuizScreenState extends State<QuizScreen> {
                       bgColor = Colors.white;
                       borderColor = Colors.grey.shade300;
                     }
-
                     return GestureDetector(
-                      onTap: () => _checkAnswer(index),
+                      onTap: () => _selectAnswer(index),
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.all(16),
@@ -194,8 +186,12 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ),
                               ),
                             ),
-                            if (icon != null)
-                              Icon(icon, color: borderColor, size: 24),
+                            if (isSelected)
+                              const Icon(
+                                Icons.check_circle,
+                                color: Color.fromARGB(255, 26, 26, 224),
+                                size: 24,
+                              ),
                           ],
                         ),
                       ),
@@ -205,7 +201,6 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
           ),
-          // Alt navigasyon
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -238,7 +233,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 else
                   const SizedBox(width: 100),
                 const Spacer(),
-                if (_answered)
+                if (_userAnswers[_currentIndex] != null)
                   ElevatedButton.icon(
                     onPressed: _nextQuestion,
                     icon: Icon(
@@ -322,6 +317,33 @@ class _QuizScreenState extends State<QuizScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => _buildReviewScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.checklist),
+                  label: const Text('Show My Answers'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color.fromARGB(255, 26, 26, 224),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 26, 26, 224),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -330,9 +352,11 @@ class _QuizScreenState extends State<QuizScreen> {
                       setState(() {
                         _currentIndex = 0;
                         _score = 0;
-                        _selectedIndex = null;
-                        _answered = false;
                         _finished = false;
+                        _userAnswers = List.filled(
+                          widget.quizTopic.questions.length,
+                          null,
+                        );
                       });
                     },
                     icon: const Icon(Icons.refresh),
@@ -367,6 +391,113 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildReviewScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0F4F8),
+      appBar: AppBar(
+        title: const Text('Review Answers'),
+        backgroundColor: const Color.fromARGB(255, 26, 26, 224),
+        foregroundColor: Colors.white,
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: widget.quizTopic.questions.length,
+        itemBuilder: (context, index) {
+          final question = widget.quizTopic.questions[index];
+          final userAnswer = _userAnswers[index];
+          final isCorrect = userAnswer == question.correctAnswerIndex;
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isCorrect ? Colors.green : Colors.red,
+                width: 2,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      isCorrect ? Icons.check_circle : Icons.cancel,
+                      color: isCorrect ? Colors.green : Colors.red,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Question ${index + 1}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF4A6B8A),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  question.question,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF4A6B8A),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (userAnswer != null) ...[
+                  Text(
+                    'Your answer: ${question.options[userAnswer]}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isCorrect ? Colors.green : Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+                if (!isCorrect) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Correct answer: ${question.options[question.correctAnswerIndex]}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+                if (userAnswer == null) ...[
+                  Text(
+                    'Not answered',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade500,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Correct answer: ${question.options[question.correctAnswerIndex]}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
       ),
     );
   }

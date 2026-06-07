@@ -19,7 +19,12 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'cyber_detective.db');
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -36,7 +41,35 @@ class DatabaseHelper {
         quiz_score INTEGER DEFAULT 0,
         game_score INTEGER DEFAULT 0
       )
+      
+  CREATE TABLE quiz_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    quiz_id TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    correct INTEGER NOT NULL,
+    wrong INTEGER NOT NULL,
+    date TEXT NOT NULL
+  )
     ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+      CREATE TABLE IF NOT EXISTS quiz_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL,
+        quiz_id TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        total INTEGER NOT NULL,
+        correct INTEGER NOT NULL,
+        wrong INTEGER NOT NULL,
+        date TEXT NOT NULL
+      )
+    ''');
+    }
   }
 
   // Yeni kullanıcı kaydı
@@ -122,5 +155,41 @@ class DatabaseHelper {
         );
       }
     }
+  }
+
+  // Quiz geçmişini kaydet
+  Future<void> saveQuizHistory({
+    required String username,
+    required String quizId,
+    required int score,
+    required int total,
+    required int correct,
+    required int wrong,
+  }) async {
+    Database db = await database;
+    await db.insert('quiz_history', {
+      'username': username,
+      'quiz_id': quizId,
+      'score': score,
+      'total': total,
+      'correct': correct,
+      'wrong': wrong,
+      'date': DateTime.now().toString().substring(0, 16).replaceAll('T', ' '),
+    });
+  }
+
+  // Son 4 quiz geçmişini getir
+  Future<List<Map<String, dynamic>>> getQuizHistory(
+    String username,
+    String quizId,
+  ) async {
+    Database db = await database;
+    return await db.query(
+      'quiz_history',
+      where: 'username = ? AND quiz_id = ?',
+      whereArgs: [username, quizId],
+      orderBy: 'id DESC',
+      limit: 4,
+    );
   }
 }
