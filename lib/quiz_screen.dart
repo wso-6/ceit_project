@@ -126,7 +126,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 189, 184, 243),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -139,9 +139,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     child: Text(
                       question.question,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF4A6B8A),
+                        color: Color.fromARGB(255, 50, 49, 49),
                       ),
                     ),
                   ),
@@ -182,7 +182,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                   fontWeight: isSelected
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: const Color(0xFF4A6B8A),
+                                  color: const Color.fromARGB(255, 37, 57, 75),
                                 ),
                               ),
                             ),
@@ -197,12 +197,13 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     );
                   }),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 85),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 152),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -228,6 +229,10 @@ class _QuizScreenState extends State<QuizScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
                     ),
                   )
                 else
@@ -251,6 +256,10 @@ class _QuizScreenState extends State<QuizScreen> {
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 14,
                       ),
                     ),
                   ),
@@ -317,7 +326,6 @@ class _QuizScreenState extends State<QuizScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
-              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -371,9 +379,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   const SizedBox(width: 16),
                   OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.arrow_back),
                     label: const Text('Back'),
                     style: OutlinedButton.styleFrom(
@@ -410,7 +416,6 @@ class _QuizScreenState extends State<QuizScreen> {
           final question = widget.quizTopic.questions[index];
           final userAnswer = _userAnswers[index];
           final isCorrect = userAnswer == question.correctAnswerIndex;
-
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
             padding: const EdgeInsets.all(16),
