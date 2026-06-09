@@ -5,14 +5,16 @@ import './sabit_icerik.dart';
 
 class ProgressManager extends ChangeNotifier {
   Set<String> completedModules = {};
+  String _username = '';
 
-  ProgressManager() {
+  ProgressManager({String username = ''}) {
+    _username = username;
     _loadProgress();
   }
 
   Future<void> _loadProgress() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? saved = prefs.getString('completed_modules');
+    final String? saved = prefs.getString('completed_modules_$_username');
     if (saved != null) {
       final List<String> list = List<String>.from(jsonDecode(saved));
       completedModules = Set<String>.from(list);
@@ -41,7 +43,7 @@ class ProgressManager extends ChangeNotifier {
   Future<void> _saveProgress() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> list = completedModules.toList();
-    await prefs.setString('completed_modules', jsonEncode(list));
+    await prefs.setString('completed_modules_$_username', jsonEncode(list));
   }
 
   Future<void> resetProgress() async {

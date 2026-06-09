@@ -174,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
-    _progressManager = ProgressManager();
+    _progressManager = ProgressManager(username: widget.username);
     _refreshUserData();
     Future.delayed(Duration.zero, () => _checkLevelUp());
   }

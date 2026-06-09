@@ -27,7 +27,7 @@ class _QuizStartScreenState extends State<QuizStartScreen> {
   @override
   void initState() {
     super.initState();
-    _progressManager = ProgressManager();
+    _progressManager = ProgressManager(username: widget.username);
     _loadHistory();
   }
 
