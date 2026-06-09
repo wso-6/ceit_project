@@ -5,8 +5,8 @@ import './url_game_screen.dart';
 
 class GameScreen extends StatefulWidget {
   final String username;
-  const GameScreen({super.key, required this.username});
-
+  final Map<String, dynamic>? userData;
+  const GameScreen({super.key, required this.username, this.userData});
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -33,7 +33,7 @@ class _GameScreenState extends State<GameScreen> {
     },
   ];
 
-  void _openGame(int index) {
+  void _openGame(int index) async {
     Widget screen;
     if (index == 0) {
       screen = GamePlayScreen(username: widget.username);
@@ -42,7 +42,12 @@ class _GameScreenState extends State<GameScreen> {
     } else {
       screen = URLGameScreen(username: widget.username);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+    // Dönünce yenile
+    setState(() {});
   }
 
   @override
@@ -97,7 +102,7 @@ class _GameScreenState extends State<GameScreen> {
                   ).withValues(alpha: 0.3),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -120,7 +125,7 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '0 / 15  |  0%',
+                    '${widget.userData?['game_score'] ?? 0} / 15  |  ${widget.userData?['game_score'] != null ? ((widget.userData!['game_score'] as int) / 15 * 100).round() : 0}%',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

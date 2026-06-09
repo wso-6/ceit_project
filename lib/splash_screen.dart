@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './auth_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -85,10 +86,10 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'Cyber Detective',
-                      style: TextStyle(
-                        fontSize: 32,
+                      style: GoogleFonts.orbitron(
+                        fontSize: 35,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),

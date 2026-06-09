@@ -67,6 +67,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     } else {
       setState(() => _finished = true);
       DatabaseHelper().addXP(widget.username, _score * 5);
+      DatabaseHelper().updateGameScore(widget.username, _score);
     }
   }
 

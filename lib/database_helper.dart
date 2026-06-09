@@ -217,6 +217,20 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> updateGameScore(String username, int score) async {
+    Database db = await database;
+    var user = await getUser(username);
+    if (user != null) {
+      int currentScore = (user['game_score'] as int? ?? 0) + score;
+      await db.update(
+        'users',
+        {'game_score': currentScore},
+        where: 'username = ?',
+        whereArgs: [username],
+      );
+    }
+  }
+
   Future<void> addXP(String username, int amount) async {
     Database db = await database;
     var user = await getUser(username);

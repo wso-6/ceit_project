@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './main.dart';
 import './sign_up_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
@@ -19,9 +20,9 @@ class AuthScreen extends StatelessWidget {
                 const SizedBox(height: 40),
                 Image.asset('assets/logo.png', width: 400, height: 300),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Cyber Detective',
-                  style: TextStyle(
+                  style: GoogleFonts.orbitron(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF4A6B8A),

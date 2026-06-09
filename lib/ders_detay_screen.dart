@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import './content_model.dart';
 import './progress_manager.dart';
 import './sabit_icerik.dart';
@@ -40,7 +41,6 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
       widget.topicId,
       widget.module.number,
     );
-    // Video varsa controller hazırla
     if (widget.module.videoUrl.isNotEmpty) {
       final videoId = getYouTubeVideoId(widget.module.videoUrl);
       if (videoId.isNotEmpty) {
@@ -69,9 +69,8 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
         widget.module.number,
       );
       await DatabaseHelper().addXP(widget.username, 10);
-      setState(() {
-        _isCompleted = true;
-      });
+      if (!mounted) return;
+      setState(() => _isCompleted = true);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("✅ Module completed! Great job!"),
@@ -91,7 +90,10 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.mainTitle} - Module ${widget.module.number}"),
+        title: Text(
+          "${widget.mainTitle} - Module ${widget.module.number}",
+          style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: _selectedColor,
       ),
       body: SingleChildScrollView(
@@ -134,7 +136,7 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
               Expanded(
                 child: Text(
                   widget.module.title,
-                  style: TextStyle(
+                  style: GoogleFonts.lato(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: _isCompleted
@@ -177,7 +179,6 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
           ),
           const SizedBox(height: 20),
         ],
-
         const Text(
           "📖 Read & Learn",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -198,7 +199,7 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
           ),
           child: Text(
             widget.module.detailedContent,
-            style: const TextStyle(fontSize: 16, height: 1.5),
+            style: GoogleFonts.lato(fontSize: 16, height: 1.5),
           ),
         ),
       ],
@@ -238,9 +239,9 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
                 color: Colors.green.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Icon(Icons.check_circle, color: Colors.green),
                   SizedBox(width: 10),
                   Text(

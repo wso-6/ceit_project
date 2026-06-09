@@ -45,6 +45,7 @@ class _PasswordGameScreenState extends State<PasswordGameScreen> {
     } else {
       setState(() => _finished = true);
       DatabaseHelper().addXP(widget.username, _score * 5);
+      DatabaseHelper().updateGameScore(widget.username, _score);
     }
   }
 
