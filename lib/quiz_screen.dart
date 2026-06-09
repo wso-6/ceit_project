@@ -53,9 +53,6 @@ class _QuizScreenState extends State<QuizScreen> {
     }
     _score = score;
     DatabaseHelper().updateQuizScore(widget.username, _score);
-    setState(() {
-      _finished = true;
-    });
     final correct = score;
     final wrong = widget.quizTopic.questions.length - score;
     DatabaseHelper().saveQuizHistory(
@@ -66,6 +63,10 @@ class _QuizScreenState extends State<QuizScreen> {
       correct: correct,
       wrong: wrong,
     );
+    DatabaseHelper().addXP(widget.username, score * 5);
+    setState(() {
+      _finished = true;
+    });
   }
 
   void _previousQuestion() {

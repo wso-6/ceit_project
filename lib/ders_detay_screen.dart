@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import './content_model.dart';
 import './progress_manager.dart';
-import 'package:url_launcher/url_launcher.dart';
+import './sabit_icerik.dart';
 import './quiz_icerik.dart';
 import './quiz_start_screen.dart';
+import './database_helper.dart';
 
 class DersDetayScreen extends StatefulWidget {
   final Module module;
@@ -27,8 +29,8 @@ class DersDetayScreen extends StatefulWidget {
 
 class _DersDetayScreenState extends State<DersDetayScreen> {
   bool _isCompleted = false;
+  YoutubePlayerController? _youtubeController;
 
-  // 🟢 Renk sabitleri
   static const Color _selectedColor = Color.fromARGB(255, 26, 26, 224);
 
   @override
@@ -38,11 +40,26 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
       widget.topicId,
       widget.module.number,
     );
+    // Video varsa controller hazırla
+    if (widget.module.videoUrl.isNotEmpty) {
+      final videoId = getYouTubeVideoId(widget.module.videoUrl);
+      if (videoId.isNotEmpty) {
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+            hideControls: false,
+          ),
+        );
+      }
+    }
   }
 
-  bool get _isLandscape {
-    final orientation = MediaQuery.of(context).orientation;
-    return orientation == Orientation.landscape;
+  @override
+  void dispose() {
+    _youtubeController?.dispose();
+    super.dispose();
   }
 
   void _markComplete() async {
@@ -51,6 +68,7 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
         widget.topicId,
         widget.module.number,
       );
+      await DatabaseHelper().addXP(widget.username, 10);
       setState(() {
         _isCompleted = true;
       });
@@ -61,17 +79,6 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
           duration: Duration(seconds: 2),
         ),
       );
-    }
-  }
-
-  void _openVideo() async {
-    final Uri url = Uri.parse(widget.module.videoUrl);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Could not open video!")));
     }
   }
 
@@ -89,23 +96,14 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: _isLandscape
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _buildContent()),
-                  const SizedBox(width: 16),
-                  Expanded(child: _buildActions(totalModules, isLastModule)),
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildContent(),
-                  const SizedBox(height: 24),
-                  _buildActions(totalModules, isLastModule),
-                ],
-              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildContent(),
+            const SizedBox(height: 24),
+            _buildActions(totalModules, isLastModule),
+          ],
+        ),
       ),
     );
   }
@@ -160,33 +158,26 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
           ),
           const SizedBox(height: 16),
         ],
-        if (widget.module.videoUrl.isNotEmpty) ...[
+        if (widget.module.videoUrl.isNotEmpty &&
+            _youtubeController != null) ...[
           const Text(
             "🎬 Watch the Video",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TextButton.icon(
-              onPressed: _openVideo,
-              icon: const Icon(
-                Icons.play_circle,
-                color: Color.fromARGB(255, 26, 26, 224),
-                size: 40,
-              ),
-              label: const Text(
-                "Click to Watch",
-                style: TextStyle(fontSize: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: YoutubePlayer(
+                controller: _youtubeController!,
+                showVideoProgressIndicator: true,
               ),
             ),
           ),
           const SizedBox(height: 20),
         ],
+
         const Text(
           "📖 Read & Learn",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -195,7 +186,7 @@ class _DersDetayScreenState extends State<DersDetayScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 198, 208, 241),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(

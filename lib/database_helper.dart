@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'cyber_detective.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -40,7 +40,9 @@ class DatabaseHelper {
         badge TEXT DEFAULT 'Rookie Detective 🔍',
         avatar TEXT DEFAULT 'person',
         quiz_score INTEGER DEFAULT 0,
-        game_score INTEGER DEFAULT 0
+        game_score INTEGER DEFAULT 0,
+        xp INTEGER DEFAULT 0,
+        level INTEGER DEFAULT 1
       )
     ''');
 
@@ -77,6 +79,10 @@ class DatabaseHelper {
       await db.execute(
         "ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT 'person'",
       );
+    }
+    if (oldVersion < 4) {
+      await db.execute("ALTER TABLE users ADD COLUMN xp INTEGER DEFAULT 0");
+      await db.execute("ALTER TABLE users ADD COLUMN level INTEGER DEFAULT 1");
     }
   }
 
@@ -209,5 +215,32 @@ class DatabaseHelper {
       where: 'username = ?',
       whereArgs: [username],
     );
+  }
+
+  Future<void> addXP(String username, int amount) async {
+    Database db = await database;
+    var user = await getUser(username);
+    if (user != null) {
+      int currentXP = (user['xp'] as int? ?? 0) + amount;
+
+      // 100 XP = 1 level
+      int newLevel = (currentXP ~/ 100) + 1;
+      await db.update(
+        'users',
+        {'xp': currentXP, 'level': newLevel},
+        where: 'username = ?',
+        whereArgs: [username],
+      );
+    }
+  }
+
+  Future<int> getXP(String username) async {
+    var user = await getUser(username);
+    return user?['xp'] as int? ?? 0;
+  }
+
+  Future<int> getLevel(String username) async {
+    var user = await getUser(username);
+    return user?['level'] as int? ?? 1;
   }
 }

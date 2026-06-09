@@ -249,3 +249,15 @@ Remember, the internet is a vast and beautiful world, but it requires smart prot
     ],
   ),
 ];
+// YouTube linkinden video ID'sini çıkarmak için yardımcı fonksiyon
+String getYouTubeVideoId(String url) {
+  // https://youtu.be/ABC123 -> ABC123
+  // https://www.youtube.com/watch?v=ABC123 -> ABC123
+  final uri = Uri.parse(url);
+  if (uri.host == 'youtu.be') {
+    return uri.pathSegments.first;
+  } else if (uri.host.contains('youtube.com')) {
+    return uri.queryParameters['v'] ?? '';
+  }
+  return '';
+}
