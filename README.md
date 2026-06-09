@@ -17,14 +17,7 @@ This app is developed to raise **cybersecurity and typography awareness** among 
 - **GitHub** (Version control & collaboration)
 - **Android Studio** (Virtual Device Emulator senaa)
 
-## Sections
-
-| Section | Description                                         |
-| ------- | --------------------------------------------------- |
-| Learn   | Phishing, fake URLs, character tricks, safety rules |
-| Quiz    | 5-10 question test, instant feedback                |
-| Game    | "Cyber Detective" - analyze suspicious messages     |
-| Profile | User info, score display                            |
+## Project file
 
 ## How to Run
 
